@@ -54,6 +54,7 @@ void moveToFeederStation();
  * Arguements:	N/A
  * Returns: 		N/A
 */
+void setArmToFeeder();
 void stackConeFromFeeder();
 
 /* Function: 		depositFirstStack
@@ -78,7 +79,7 @@ void lowerBase();
 */
 void raiseBase();
 
-
+void placeBase();
 #include "Auton.c"
 
 #endif // _AUTON_H_
