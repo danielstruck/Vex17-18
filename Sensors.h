@@ -58,6 +58,7 @@ int getGoalLiftBump();
 
 void moveArmToPosition(int pos);
 
+int applyDampening(int input);
 
 #include "Sensors.c"
 
