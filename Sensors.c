@@ -3,7 +3,7 @@
 #include "Motors.h"
 
 int getGyro(void) {
-	return SensorValue[Gyro] - 1800;
+	return SensorValue[Gyro];
 }
 
 int getGoalLiftBump() {
@@ -119,13 +119,21 @@ int applyDampening(int input) {
 void rotateTo(float targetDeg) {
 	const static unsigned float threshhold = 1; // max error in degrees (how many degrees off is "good enough"?)
 
+	int distCCW;
+	int distCW;
+	int shortestDist;
+	int speed;
+
 	while (abs(getGyro() - targetDeg) > threshhold*10) { // (threshhold*10) to scale to getGyro()
-		int distCCW			 = 3600 - targetDeg;
-		int distCW  		 = targetDeg - getGyro();
-		int shortestDist = min(distCCW, distCW); // calculate shortest path
-		int speed				 = applyDampening(shortestDist);
+		distCCW			 = 3600 - targetDeg;
+		distCW  		 = targetDeg - getGyro();
+		shortestDist = min(distCCW, distCW); // calculate shortest path
+		speed				 = applyDampening(shortestDist);
 
 		leftWheels(speed);
 		rightWheels(-speed);
 	}
+
+	leftWheels(-speed);
+	rightWheels(speed);
 }
