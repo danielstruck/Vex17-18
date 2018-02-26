@@ -3,24 +3,30 @@
 #include "Sensors.h"
 
 void doTeleop() {
+	float multMain = ()?
+					 0.5:
+					 1;
+	float multPartner = ()?
+						0.5:
+						1;
 	// (up, down)
- 	coneArmControl(getP5U(), getP5D());
+ 	coneArmControl(getP5U(), getP5D(), multMain);
  	// (open, close)
- 	coneClawControl(getP6D(), getP6U());
+ 	coneClawControl(getP6D(), getP6U(), multMain);
 	// (up, down)
- 	goalArmControl1(getB6U(), getB6D());
+ 	goalArmControl1(getB6U(), getB6D(), multMain);
   // (left x-axis, left y-axis, right x-axis, right y-axis)
- 	wheelControl(getLJoyX(), getLJoyY(), getRJoyX(), getRJoyY());
+ 	wheelControl(getLJoyX(), getLJoyY(), getRJoyX(), getRJoyY(), multMain);
  	// (open, close)
- 	pusherControl(getB5U(), getB5D());
+ 	pusherControl(getB5U(), getB5D(), multMain);
 }
 
-void coneArmControl(const bool moveUp, const bool moveDown) {
+void coneArmControl(const bool moveUp, const bool moveDown, const float multilpier) {
 	if(moveUp) {
-		coneArmSpeed(CONE_ARM_UP);
+		coneArmSpeed(CONE_ARM_UP * multiplier);
 	}
 	else if(moveDown) {
-		coneArmSpeed(CONE_ARM_DOWN);
+		coneArmSpeed(CONE_ARM_DOWN * multiplier);
 	}
 	else {
 		if(getArmPosition() < CONE_ARM_HIGH)
@@ -30,8 +36,11 @@ void coneArmControl(const bool moveUp, const bool moveDown) {
 	}
 }
 
-void wheelControl(int leftXAxis, int leftYAxis, int rightXAxis, int rightYAxis) {
-  const int threshhold = 10;
+float applyCurve(float input, int n) {
+	return ipow(input, n)/ipow(127,n-1);
+}
+void wheelControl(int leftXAxis, int leftYAxis, int rightXAxis, int rightYAxis, const float multilpier) {
+    const int threshhold = 10;
 
 	/* -Tank- */
 	//rightWheels((getRJoyY() * multiplier) * .5);
@@ -44,24 +53,25 @@ void wheelControl(int leftXAxis, int leftYAxis, int rightXAxis, int rightYAxis) 
 	//	strafeWheel(0);
 
 	/* -Arcade- */
-	rightWheels(leftYAxis - rightXAxis);
-	leftWheels(leftYAxis + rightXAxis);
+	
+	rightWheels(applyCurve(leftYAxis - rightXAxis, 3) * multiplier);
+	leftWheels(applyCurve(leftYAxis + rightXAxis, 3) * multiplier);
 	if(abs(leftXAxis) > threshhold)
-		strafeWheel(-leftXAxis);
+		strafeWheel(-leftXAxis * multiplier);
 	else
 		strafeWheel(0);
 }
 
-void goalArmControl1(const bool moveUp, const bool moveDown) {
+void goalArmControl1(const bool moveUp, const bool moveDown, const float multiplier) {
 	if(moveUp)
-		goalArmSpeed(GOAL_ARM_UP);
+		goalArmSpeed(GOAL_ARM_UP * multiplier);
 	else if(moveDown)
-		goalArmSpeed(GOAL_ARM_DOWN);
+		goalArmSpeed(GOAL_ARM_DOWN * multiplier);
 	else
 		goalArmSpeed(0);
 }
 
-void coneClawControl(const bool open, const bool close){
+void coneClawControl(const bool open, const bool close, const float multiplier){
 	//static bool toggleState = true, clawClosed = false;
 	//if(toggleState && getB6D()) {
 	//	toggleState = false;
@@ -78,18 +88,18 @@ void coneClawControl(const bool open, const bool close){
 	//	toggleState = true;
 
 	if(open)
-		coneClawSpeed(CONE_CLAW_OPEN);
+		coneClawSpeed(CONE_CLAW_OPEN * multiplier);
 	else if(close)
-		coneClawSpeed(CONE_CLAW_CLOSE);
+		coneClawSpeed(CONE_CLAW_CLOSE * multiplier);
 	else
 		coneClawSpeed(0);
 }
 
-void pusherControl(const bool open, const bool close) {
+void pusherControl(const bool open, const bool close, const float multiplier) {
 	if (open)
-		goalPusherSpeed(GOAL_PUSHER_OPEN);
+		goalPusherSpeed(GOAL_PUSHER_OPEN * multiplier);
 	else if (close)
-		goalPusherSpeed(GOAL_PUSHER_CLOSE);
+		goalPusherSpeed(GOAL_PUSHER_CLOSE * multiplier);
 	else
 		goalPusherSpeed(0);
 
