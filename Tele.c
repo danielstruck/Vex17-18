@@ -3,43 +3,46 @@
 #include "Sensors.h"
 
 void doTeleop() {
-	float multMain = ()?
+	float multMain = (getB7D() || getB8D())?
 					 0.5:
 					 1;
-	float multPartner = ()?
+	float multPartner = (getP7D() || getP8D())?
 						0.5:
 						1;
 	// (up, down)
- 	coneArmControl(getP5U(), getP5D(), multMain);
+ 	coneArmControl(getP5U(), getP5D(), getP7L(), multMain);
  	// (open, close)
  	coneClawControl(getP6D(), getP6U(), multMain);
 	// (up, down)
  	goalArmControl1(getB6U(), getB6D(), multMain);
   // (left x-axis, left y-axis, right x-axis, right y-axis)
- 	wheelControl(getLJoyX(), getLJoyY(), getRJoyX(), getRJoyY(), multMain);
+ 	wheelControl(getLJoyX(), getLJoyY(), -getRJoyX(), getRJoyY(), multMain);
  	// (open, close)
  	pusherControl(getB5U(), getB5D(), multMain);
 }
 
-void coneArmControl(const bool moveUp, const bool moveDown, const float multilpier) {
+void coneArmControl(const bool moveUp, const bool moveDown, const bool lockArm, const float multiplier) {
 	if(moveUp) {
 		coneArmSpeed(CONE_ARM_UP * multiplier);
 	}
 	else if(moveDown) {
 		coneArmSpeed(CONE_ARM_DOWN * multiplier);
 	}
-	else {
+	else if (lockArm) {
 		if(getArmPosition() < CONE_ARM_HIGH)
 			coneArmSpeed(CONE_ARM_UP * .1);
 		else
 			coneArmSpeed(CONE_ARM_DOWN * .1);
 	}
+	else {
+		coneArmSpeed(0);
+  }
 }
 
 float applyCurve(float input, int n) {
 	return ipow(input, n)/ipow(127,n-1);
 }
-void wheelControl(int leftXAxis, int leftYAxis, int rightXAxis, int rightYAxis, const float multilpier) {
+void wheelControl(int leftXAxis, int leftYAxis, int rightXAxis, int rightYAxis, const float multiplier) {
     const int threshhold = 10;
 
 	/* -Tank- */
@@ -53,7 +56,7 @@ void wheelControl(int leftXAxis, int leftYAxis, int rightXAxis, int rightYAxis, 
 	//	strafeWheel(0);
 
 	/* -Arcade- */
-	
+
 	rightWheels(applyCurve(leftYAxis - rightXAxis, 3) * multiplier);
 	leftWheels(applyCurve(leftYAxis + rightXAxis, 3) * multiplier);
 	if(abs(leftXAxis) > threshhold)

@@ -4,14 +4,14 @@
 
 
 void doTeleop();
-void coneArmControl(const bool moveUp, const bool moveDown, const float multilpier);
+void coneArmControl(const bool moveUp, const bool moveDown, const bool lockArm, const float multiplier);
 float applyCurve(float input, int n);
-void wheelControl(int leftXAxis, int leftYAxis, int rightXAxis, int rightYAxis, const float multilpier);
-void goalArmControl1(const bool moveUp, const bool moveDown, const float multilpier);
-void coneClawControl(const bool open, const bool close, const float multilpier);
-void goalArmControl(const bool moveUp, const bool moveDown, const float multilpier);
+void wheelControl(int leftXAxis, int leftYAxis, int rightXAxis, int rightYAxis, const float multiplier);
+void goalArmControl1(const bool moveUp, const bool moveDown, const float multiplier);
+void coneClawControl(const bool open, const bool close, const float multiplier);
+void goalArmControl(const bool moveUp, const bool moveDown, const float multiplier);
 //void goalClawControl(); // depricated
-void pusherControl(const bool open, const bool close, const float multilpier);
+void pusherControl(const bool open, const bool close, const float multiplier);
 
 #include "Tele.c"
 
