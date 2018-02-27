@@ -74,5 +74,13 @@ float dontMore(float num, float max){
 		return max;
 	return num;
 }
+// return [float] number raised to a non-negative integer power
+long int ipow(float base, int power) {
+	long int val = 1;
 
+	for (int i = 0; i < power; i++)
+		val *= base;
+
+	return val;
+}
 #endif // _MISC_TEMPLATE_H_
