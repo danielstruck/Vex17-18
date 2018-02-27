@@ -10,9 +10,9 @@ void doTeleop() {
 						0.5:
 						1;
 	// (up, down)
- 	coneArmControl(getP5U(), getP5D(), getP7L(), multMain);
+ 	coneArmControl(getP5U(), getP5D(), getP7L(), multPartner);
  	// (open, close)
- 	coneClawControl(getP6D(), getP6U(), multMain);
+ 	coneClawControl(getP6D(), getP6U(), multPartner);
 	// (up, down)
  	goalArmControl1(getB6U(), getB6D(), multMain);
   // (left x-axis, left y-axis, right x-axis, right y-axis)
