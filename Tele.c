@@ -3,16 +3,12 @@
 #include "Sensors.h"
 
 void doTeleop() {
-	float multMain = (getB7D() || getB8D())?
-					 0.5:
-					 1;
-	float multPartner = (getP7D() || getP8D())?
-						0.5:
-						1;
+	float multMain = (getB7D() || getB8D())? 0.5: 1;
+	float multPartner = (getP7D() || getP8D())? 0.5: 1;
 	// (up, down)
- 	coneArmControl(getP5U(), getP5D(), getP7L(), multMain);
+ 	coneArmControl(getP5U(), getP5D(), getP7L(), multPartner);
  	// (open, close)
- 	coneClawControl(getP6D(), getP6U(), multMain);
+ 	coneClawControl(getP6D(), getP6U(), multPartner);
 	// (up, down)
  	goalArmControl1(getB6U(), getB6D(), multMain);
   // (left x-axis, left y-axis, right x-axis, right y-axis)
@@ -57,8 +53,8 @@ void wheelControl(int leftXAxis, int leftYAxis, int rightXAxis, int rightYAxis, 
 
 	/* -Arcade- */
 
-	rightWheels(applyCurve(leftYAxis - rightXAxis, 3) * multiplier);
-	leftWheels(applyCurve(leftYAxis + rightXAxis, 3) * multiplier);
+	rightWheels(applyCurve(leftYAxis - rightXAxis, 2) * multiplier);
+	leftWheels(applyCurve(leftYAxis + rightXAxis, 2) * multiplier);
 	if(abs(leftXAxis) > threshhold)
 		strafeWheel(-leftXAxis * multiplier);
 	else
