@@ -1,38 +1,50 @@
 #include "Sensors.h"
 #include "Misc_Template.h"
 #include "Auton.h"
-
+#include "Motors.h"
+//include "vision.h"
 void doAuton() {
 	// decide if we are blue or red
-	static int startPosition = getStartPosition();
-
+	//static int startPosition = getStartPosition();
+//rotateTo(90);
 	retrieveMobile();
 
-	/* stack preload */
-	stackConeFromGround();
+	///* stack preload */
+	//stackConeFromGround();
 
-	moveToFeederStation();
-
-	for (int i = 0; i < 3; i++)
-		stackConeFromFeeder();
-
-	depositFirstStack();
+//	moveToFeederStation();
+	////for (int i = 0; i < 3; i++)
+	//	stackConeFromFeeder();
+//	depositFirstStack();
+	//scanForVisionTarget(1);
+//	rotateTo(90);
+	//while(1) {
+	//}
 }
 
 int getStartPosition() {
-	if (SensorValue[dgtl1])
+//	if (SensorValue[startModeJumper])
 		return RED;
 	return BLUE;
 }
 
 void retrieveMobile() {
 	//turnForDegrees(35, RIGHT_TURN);
-
-	moveIn(66);
-
-	rotateTo(45);
-
-	lowerBase();
+//rotateTo(-45);
+coneArmSpeed(CONE_ARM_DOWN);
+delay(1000);
+coneArmSpeed(0);
+leftWheels(DRIVE_BACKWARD);
+delay(600);
+leftWheels(0);
+strafeWheel(127);
+delay(500);
+strafeWheel(-127);
+delay(250);
+strafeWheel(0);
+moveIn(-66);
+	resetGyro();
+lowerBase();
 
 	moveIn(-24);
 
@@ -40,25 +52,53 @@ void retrieveMobile() {
 }
 
 void stackConeFromGround() {
-
+//coneArmSpeed(CONE_ARM_UP);
+//	delay(750);
+//	coneArmSpeed(CONE_ARM_DOWN * .1);
 }
 
 void moveToFeederStation() {
-	moveIn(12);
+	moveIn(24);
 
 	//turnForDegrees(180, RIGHT_TURN);
 
-	strafeIn(24*sign(STRAFE_RIGHT));
-
-	moveIn(24);
+	//strafeIn(24*sign(STRAFE_RIGHT));
+	rotateTo(-90);
+	moveIn(-12);
 }
-
 void stackConeFromFeeder() {
-
+	//setArmToFeeder();
+	for(int i = 0; i < 5; i++) {
+	coneClawSpeed(CONE_CLAW_OPEN);
+	delay(1000);
+	coneClawSpeed(0);
+	delay(300);
+	coneArmSpeed(CONE_ARM_UP);
+	delay(1200);
+	coneArmSpeed(0);
+	delay(750);
+	coneClawSpeed(CONE_CLAW_OPEN);
+	delay(300);
+	coneArmSpeed(CONE_ARM_DOWN);
+	delay(400);
+	coneClawSpeed(0);
+	delay(1000);
+	coneArmSpeed(0);
+	delay(700);
+	coneArmSpeed(CONE_ARM_UP * .2);
+  }
+	//coneArmSpeed(CONE_ARM_UP * .2);
+	//while(1);
+}
+void setArmToFeeder() {
+	coneArmSpeed(CONE_ARM_UP);
+	delay(500);
+	coneArmSpeed(CONE_ARM_UP * .2);
+	coneClawSpeed(CONE_CLAW_OPEN);
 }
 
 void depositFirstStack() {
-	rotateTo(-45);
+	rotateTo(90);
 
 	moveIn(-70);
 
@@ -83,9 +123,25 @@ void turnForDegrees(double angle) {
 }
 
 void lowerBase() {
-
+	goalArmSpeed(GOAL_ARM_DOWN);
+	delay(400);
+	goalArmSpeed(0);
 }
 
 void raiseBase() {
-
+	while(!getGoalLiftBump()) {
+		goalArmSpeed(GOAL_ARM_UP);
+	}
+	goalArmSpeed(0);
+}
+void placeBase() {
+	goalArmSpeed(GOAL_ARM_DOWN);
+	delay(400);
+	goalArmSpeed(0);
+	delay(400);
+	goalPusherSpeed(GOAL_PUSHER_OPEN);
+	delay(1000);
+	goalPusherSpeed(GOAL_PUSHER_CLOSE);
+	delay(1000);
+	goalPusherSpeed(0);
 }

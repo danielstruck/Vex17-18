@@ -3,7 +3,7 @@
 #include "Motors.h"
 
 int getGyro(void) {
-	return SensorValue[Gyro];
+	return SensorValue[Gyro];// - 1800;
 }
 
 int getGoalLiftBump() {
@@ -97,7 +97,7 @@ int applyDampening(int input) {
 
 	const static unsigned int minSpeed   = 20; // speed will never be lower than this number
 	const static unsigned int abruptness = 1;  // power of equation (how quickly the robot will slow down - positive, non-zero integers only)
-	const static unsigned int slowAt		 = 10; // horizontal strech (degrees at which the robot will start to slow down)
+	const static unsigned int slowAt		 = 50; // horizontal strech (degrees at which the robot will start to slow down)
 
 	int result = input;
 
@@ -117,23 +117,70 @@ int applyDampening(int input) {
 	return result;
 }
 void rotateTo(float targetDeg) {
-	const static unsigned float threshhold = 1; // max error in degrees (how many degrees off is "good enough"?)
-
-	int distCCW;
-	int distCW;
-	int shortestDist;
-	int speed;
-
-	while (abs(getGyro() - targetDeg) > threshhold*10) { // (threshhold*10) to scale to getGyro()
-		distCCW			 = 3600 - targetDeg;
-		distCW  		 = targetDeg - getGyro();
-		shortestDist = min(distCCW, distCW); // calculate shortest path
-		speed				 = applyDampening(shortestDist);
-
-		leftWheels(speed);
-		rightWheels(-speed);
+	targetDeg *= 10;
+	float threshold = 1; // max error in degrees (how many degrees off is "good enough"?)
+	//while (abs(getGyro() - targetDeg) > threshold*10 && abs(targetDeg - getGyro()) > threshold * 10) { // (threshhold*10) to scale to getGyro()
+	//while(abs(getGyro()) > targetDeg) {
+	int speed = 45;
+		//if(targetDeg < getGyro()) {
+	int flag = 0;
+	if(targetDeg < 0) {
+		targetDeg = 3600 + targetDeg;
+		flag = 1;
 	}
+		while(abs(getGyro()) - targetDeg< threshold * 10) {
 
-	leftWheels(-speed);
-	rightWheels(speed);
+			//writeDebugStreamLine("%d", getGyro());
+			int distCCW			 = 3600 - targetDeg;
+			int distCW  		 = targetDeg - getGyro();
+			int shortestDist = min(distCCW, distCW); // calculate shortest path
+			//int speed				 = applyDampening(shortestDist);
+			//writeDebugStreamLine("%d    |   %d     |     %d     |     %d", abs(getGyro() - targetDeg),abs(targetDeg - getGyro()), getGyro(), targetDeg);
+			leftWheels(speed);
+			rightWheels(-speed);
+			flag = 1;
+		}
+		if(flag == 1) {
+			leftWheels(-speed);
+		  rightWheels(speed);
+		}
+		delay(100);
+		driveStraight(0);
+		while(abs(getGyro()) - targetDeg > threshold * 10 && flag == 0) {
+
+			//writeDebugStreamLine("%d", getGyro());
+			int distCCW			 = 3600 - targetDeg;
+			int distCW  		 = targetDeg - getGyro();
+			int shortestDist = min(distCCW, distCW); // calculate shortest path
+			//int speed				 = applyDampening(shortestDist);
+			//writeDebugStreamLine("%d    |   %d     |     %d     |     %d", abs(getGyro() - targetDeg),abs(targetDeg - getGyro()), getGyro(), targetDeg);
+			leftWheels(-speed);
+			rightWheels(speed);
+			flag = 0;
+		}
+		if(flag == 0) {
+			leftWheels(speed);
+		  rightWheels(-speed);
+		}
+		delay(100);
+		driveStraight(0);
+	//		delay(100);	//}
+	//} else {
+	//	int speed = -45;
+	//	while(abs(getGyro()) > targetDeg+threshold) {
+	//		//writeDebugStreamLine("%d", getGyro());
+	//		int distCCW			 = 3600 - targetDeg;
+	//		int distCW  		 = targetDeg - getGyro();
+	//		int shortestDist = min(distCCW, distCW); // calculate shortest path
+	//		//speed				 = applyDampening(shortestDist);
+	//	//	writeDebugStreamLine("%d", abs(getGyro));
+	//		writeDebugStreamLine("%d    |   %d     |     %d     |     %d", abs(getGyro() - targetDeg),abs(targetDeg - getGyro()), getGyro(), targetDeg);
+	//		leftWheels(speed);
+	//		rightWheels(-speed);
+	//	}
+	//		leftWheels(-speed);
+	//	  rightWheels(speed);
+	//		delay(100);	//}
+	//}
+	//	driveStraight(0);
 }
