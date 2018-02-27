@@ -6,19 +6,18 @@
 void doAuton() {
 	// decide if we are blue or red
 	//static int startPosition = getStartPosition();
-
+//rotateTo(90);
 	retrieveMobile();
 
 	///* stack preload */
 	//stackConeFromGround();
 
-	//moveToFeederStation();
-	//lowerBase();
-	//for (int i = 0; i < 3; i++)
+//	moveToFeederStation();
+	////for (int i = 0; i < 3; i++)
 	//	stackConeFromFeeder();
-	//depositFirstStack();
+//	depositFirstStack();
 	//scanForVisionTarget(1);
-	rotateTo(90);
+//	rotateTo(90);
 	//while(1) {
 	//}
 }
@@ -31,16 +30,25 @@ int getStartPosition() {
 
 void retrieveMobile() {
 	//turnForDegrees(35, RIGHT_TURN);
-rotateTo(45);
-//moveIn(66);
+//rotateTo(-45);
+coneArmSpeed(CONE_ARM_DOWN);
+delay(1000);
+coneArmSpeed(0);
+leftWheels(DRIVE_BACKWARD);
+delay(600);
+leftWheels(0);
+strafeWheel(127);
+delay(500);
+strafeWheel(-127);
+delay(250);
+strafeWheel(0);
+moveIn(-66);
+	resetGyro();
+lowerBase();
 
-//	rotateTo(45);
+	moveIn(-24);
 
-//	lowerBase();
-
-//	moveIn(-24);
-
-	//raiseBase();
+	raiseBase();
 }
 
 void stackConeFromGround() {
@@ -50,15 +58,14 @@ void stackConeFromGround() {
 }
 
 void moveToFeederStation() {
-	moveIn(12);
+	moveIn(24);
 
 	//turnForDegrees(180, RIGHT_TURN);
 
-	strafeIn(24*sign(STRAFE_RIGHT));
-
-	moveIn(24);
+	//strafeIn(24*sign(STRAFE_RIGHT));
+	rotateTo(-90);
+	moveIn(-12);
 }
-
 void stackConeFromFeeder() {
 	//setArmToFeeder();
 	for(int i = 0; i < 5; i++) {
@@ -91,7 +98,7 @@ void setArmToFeeder() {
 }
 
 void depositFirstStack() {
-	rotateTo(-45);
+	rotateTo(90);
 
 	moveIn(-70);
 
@@ -116,14 +123,14 @@ void turnForDegrees(double angle) {
 }
 
 void lowerBase() {
-	goalArmSpeed(GOAL_ARM_UP);
+	goalArmSpeed(GOAL_ARM_DOWN);
 	delay(400);
 	goalArmSpeed(0);
 }
 
 void raiseBase() {
 	while(!getGoalLiftBump()) {
-		goalArmSpeed(GOAL_ARM_DOWN);
+		goalArmSpeed(GOAL_ARM_UP);
 	}
 	goalArmSpeed(0);
 }
