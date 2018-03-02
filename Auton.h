@@ -14,6 +14,10 @@
 */
 void doAuton();
 
+void blueAuton();
+
+void redAuton();
+
 /* Function: 		turnForDegrees
  * Purpose: 		turn the robot for a specifed degree and a specified angle
  * Arguements:
@@ -34,7 +38,7 @@ int getStartPosition();
  * Returns: 		N/A
 */
 void retrieveMobile();
-
+void retrieveMobileRed();
 /* Function: 		stackConeFromGround
  * Purpose: 		grabs a cone on the ground and stacks it
  * Arguements:	N/A
@@ -48,7 +52,7 @@ void stackConeFromGround();
  * Returns: 		N/A
 */
 void moveToFeederStation();
-
+void moveToFeederStationRed();
 /* Function: 		stackConeFromFeeder
  * Purpose: 		grabs a cone from the feeder and stacks it
  * Arguements:	N/A
