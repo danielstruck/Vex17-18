@@ -11,6 +11,11 @@
 #define GYRO_MAX							3600.0
 // change of value of encoder after one full revolution
 #define ENCODER_VALUE_PER_REV	360.0
+#define FEEDER_CONE_POS 941
+#define FEEDER_POS 1141
+#define GROUND_POS 1400
+#define STACK_POS 100
+#define STACK_REL_POS 500
 
 /* Function:		getGyro
  * Purpose:			retrieves the value of the robot's gyroscope
@@ -56,9 +61,7 @@ int getArmPosition();
 
 int getGoalLiftBump();
 
-void moveArmToPosition(int pos);
 
-int applyDampening(int input);
 
 #include "Sensors.c"
 

@@ -3,6 +3,7 @@
 #include "Auton.h"
 #include "Motors.h"
 //include "vision.h"
+#define feeder_station 1
 void doAuton() {
 	// decide if we are blue or red
 	//static int startPosition = getStartPosition();
@@ -12,24 +13,33 @@ void doAuton() {
 	} else {
 		redAuton();
 	}
-	//scanForVisionTarget(1);
-//	rotateTo(90);
-	//while(1) {
-	//}
+	setArmToFeeder();
+//	delay(3000);
+	stackConeFromFeeder();
 }
 void blueAuton() {
 	retrieveMobile();
+	if(feeder_station == 1) {
 	moveToFeederStation();
-	depositFirstStack();
+	depositFirstStack()
+}
 }
 void redAuton() {
 	retrieveMobileRed();
+	if(feeder_station == 1) {
 	moveToFeederStationRed();
 	depositFirstStackRed();
 }
+}
+void deployPreload() {
+	moveArmToPosition(GROUND_POS);
+}
+void stackPreload() {
+	moveArmToPosition(STACK_POS);
+}
 int getStartPosition() {
-//	if (SensorValue[startModeJumper])
-//		return RED;
+	if (SensorValue[redOrBlue])
+		return RED;
 	return BLUE;
 }
 
@@ -49,8 +59,9 @@ strafeWheel(-127);
 delay(300);
 strafeWheel(0);
 delay(500);
-coneArmSpeed(CONE_ARM_DOWN);
-delay(2000);
+//coneArmSpeed(CONE_ARM_DOWN);
+//delay(2000);
+deployPreload();
 coneArmSpeed(0);
 //	resetGyro();
 lowerBase();
@@ -60,9 +71,10 @@ leftWheels(0);
 moveIn(-25);
 
 raiseBase();
-coneArmSpeed(CONE_ARM_UP*.8);
-delay(2000);
-coneArmSpeed(0);
+//coneArmSpeed(CONE_ARM_UP*.8);
+//delay(2000);
+//coneArmSpeed(0);
+stackPreload();
 strafeWheel(127);
 delay(500);
 //strafeWheel(-127);
@@ -90,9 +102,7 @@ void retrieveMobileRed() {
 	delay(300);
 	strafeWheel(0);
 	delay(500);
-	coneArmSpeed(CONE_ARM_DOWN);
-	delay(2000);
-	coneArmSpeed(0);
+	deployPreload();
 	//	resetGyro();
 	lowerBase();
 	delay(800);
@@ -100,9 +110,7 @@ void retrieveMobileRed() {
 	moveIn(-25);
 
 	raiseBase();
-	coneArmSpeed(CONE_ARM_UP*.8);
-	delay(2000);
-	coneArmSpeed(0);
+	stackPreload();
 	strafeWheel(-127);
 	delay(500);
 	strafeWheel(0);
@@ -126,18 +134,6 @@ void moveToFeederStation() {
 	//rotateTo(135);
 	//delay(500);
 	//moveIn(-10);
-	coneClawSpeed(CONE_CLAW_OPEN);
-	delay(200);
-	coneArmSpeed(CONE_ARM_DOWN*.9);
-	delay(500);
-	coneClawSpeed(0);
-	delay(1000);
-	coneClawSpeed(CONE_CLAW_OPEN);
-	//coneArmSpeed(0);
-	delay(250);
-	coneClawSpeed(0);
-	//coneArmSpeed(CONE_ARM_UP*.1);
-	coneArmSpeed(0);
 }
 void moveToFeederStationRed() {
 	moveIn(16);
@@ -151,49 +147,32 @@ void moveToFeederStationRed() {
 	//rotateTo(135);
 	//delay(500);
 	//moveIn(-10);
-	coneClawSpeed(CONE_CLAW_OPEN);
-	delay(200);
-	coneArmSpeed(CONE_ARM_DOWN*.9);
-	delay(500);
-	coneClawSpeed(0);
-	delay(1000);
-	coneClawSpeed(CONE_CLAW_OPEN);
-	//coneArmSpeed(0);
-	delay(250);
-	coneClawSpeed(0);
-	//coneArmSpeed(CONE_ARM_UP*.1);
 	coneArmSpeed(0);
 }
 void stackConeFromFeeder() {
-	//setArmToFeeder();
-	for(int i = 0; i < 5; i++) {
+	for(int i = 0; i < 3; i++) {
+	moveArmToPosition(STACK_POS + (i*25));
+	delay(200);
 	coneClawSpeed(CONE_CLAW_OPEN);
-	delay(1000);
+	delay(200);
+	moveArmToPosition(STACK_REL_POS + (i*25));
 	coneClawSpeed(0);
-	delay(300);
-	coneArmSpeed(CONE_ARM_UP);
-	delay(1200);
-	coneArmSpeed(0);
-	delay(750);
-	coneClawSpeed(CONE_CLAW_OPEN);
-	delay(300);
-	coneArmSpeed(CONE_ARM_DOWN);
-	delay(400);
+	delay(500);
 	coneClawSpeed(0);
-	delay(1000);
-	coneArmSpeed(0);
-	delay(700);
-	coneArmSpeed(CONE_ARM_UP * .2);
-
-  }
-	//coneArmSpeed(CONE_ARM_UP * .2);
-	//while(1);
+	setArmToFeeder();
+}
 }
 void setArmToFeeder() {
-	coneArmSpeed(CONE_ARM_UP);
-	delay(500);
-	coneArmSpeed(CONE_ARM_UP * .2);
-//	coneClawSpeed(CONE_CLAW_OPEN);
+	moveArmToPosition(FEEDER_CONE_POS);
+	coneClawSpeed(CONE_CLAW_OPEN);
+	delay(200);
+	coneArmSpeed(CONE_ARM_UP * .05);
+//	moveArmToPosition(FEEDER_POS);
+	delay(300);
+	coneClawSpeed(-CONE_CLAW_OPEN);
+	delay(300);
+	coneClawSpeed(0);
+	coneArmSpeed(CONE_ARM_UP * .1);
 }
 
 void depositFirstStack() {

@@ -2,6 +2,7 @@
 #include "Sensors.h"
 #include "Motors.h"
 
+
 int getGyro(void) {
 	return SensorValue[Gyro];// - 1800;
 }
@@ -16,9 +17,9 @@ int getArmPosition() {
 
 void moveArmToPosition(int pos) {
 	static const int threshhold = 10;
-
+	pos *= -1;
 	const int dir = sign(pos - getArmPosition());
-	coneArmSpeed(CONE_ARM_UP * dir);
+	coneArmSpeed(CONE_ARM_UP * dir*.6);
 	while (abs(pos - getArmPosition()) > threshhold)
 		delay(10);
 
@@ -124,13 +125,9 @@ void rotateTo(float targetDeg) {
 	int speed = 45;
 		//if(targetDeg < getGyro()) {
 	int flag = 0;
-	if(targetDeg < 0) {
-		targetDeg = 3600 + targetDeg;
-		flag = 1;
-	}
-		while(abs(getGyro()) - targetDeg< threshold * 10) {
+		while(abs(getGyro()) - targetDeg< threshold * 10 && targetDeg > 0) {
 
-			//writeDebugStreamLine("%d", getGyro());
+			writeDebugStreamLine("%d hi", getGyro());
 			int distCCW			 = 3600 - targetDeg;
 			int distCW  		 = targetDeg - getGyro();
 			int shortestDist = min(distCCW, distCW); // calculate shortest path
@@ -146,9 +143,14 @@ void rotateTo(float targetDeg) {
 		}
 		delay(100);
 		driveStraight(0);
-		while(abs(getGyro()) - targetDeg > threshold * 10 && flag == 0) {
+//		if(targetDeg < 0) {
+//		targetDeg = 3600 + targetDeg;
+//		flag = 1;
+//	}
+		writeDebugStreamLine("%d", getGyro()- targetDeg);
+		while(abs(getGyro() - targetDeg) > threshold * 10 && flag == 0) {
 
-			//writeDebugStreamLine("%d", getGyro());
+			writeDebugStreamLine("%d %d", getGyro(), targetDeg);
 			int distCCW			 = 3600 - targetDeg;
 			int distCW  		 = targetDeg - getGyro();
 			int shortestDist = min(distCCW, distCW); // calculate shortest path
@@ -156,7 +158,6 @@ void rotateTo(float targetDeg) {
 			//writeDebugStreamLine("%d    |   %d     |     %d     |     %d", abs(getGyro() - targetDeg),abs(targetDeg - getGyro()), getGyro(), targetDeg);
 			leftWheels(-speed);
 			rightWheels(speed);
-			flag = 0;
 		}
 		if(flag == 0) {
 			leftWheels(speed);
