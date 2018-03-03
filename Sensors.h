@@ -14,7 +14,7 @@
 #define FEEDER_CONE_POS 941
 #define FEEDER_POS 1141
 #define GROUND_POS 1400
-#define STACK_POS 100
+#define STACK_POS 300
 #define STACK_REL_POS 500
 
 /* Function:		getGyro

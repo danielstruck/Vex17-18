@@ -17,7 +17,7 @@ int getArmPosition() {
 
 void moveArmToPosition(int pos) {
 	static const int threshhold = 10;
-	pos *= -1;
+	//pos *= -1;
 	const int dir = sign(pos - getArmPosition());
 	coneArmSpeed(CONE_ARM_UP * dir*.6);
 	while (abs(pos - getArmPosition()) > threshhold)

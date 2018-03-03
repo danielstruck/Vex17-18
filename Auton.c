@@ -3,33 +3,56 @@
 #include "Auton.h"
 #include "Motors.h"
 //include "vision.h"
-#define feeder_station 1
+#define feeder_station 0
+#define blue 1
 void doAuton() {
 	// decide if we are blue or red
-	//static int startPosition = getStartPosition();
-//rotateTo(90);
-	if(getStartPosition() == BLUE) {
+//	static int startPosition = getStartPosition();
+	if(blue == 1) {
 		blueAuton();
 	} else {
 		redAuton();
 	}
-	setArmToFeeder();
-//	delay(3000);
-	stackConeFromFeeder();
 }
+// main auton functions
 void blueAuton() {
+
 	retrieveMobile();
-	if(feeder_station == 1) {
-	moveToFeederStation();
-	depositFirstStack()
-}
+	//if(feeder_station == 1) {
+	//	moveToFeederStation();
+	//	depositFirstStack();
+//	}
+	// not stacking
+//	rotateTo(0);
+	moveIn(40);
+	rotateTo(210);
+	moveIn(-32);
+	rotateTo(270);
+	driveStraight(DRIVE_BACKWARD);
+	delay(2000);
+	driveStraight(0);
+	coneClawSpeed(CONE_CLAW_OPEN);
+	coneArmSpeed(CONE_ARM_DOWN);
+	delay(500);
+	coneClawSpeed(0);
+	delay(1500);
+	coneArmSpeed(0);
+	lowerBase();
+	delay(500);
+	driveStraight(DRIVE_FORWARD);
+	delay(1000);
+	driveStraight(0);
+
+	//depositBaseNoFeeder();
 }
 void redAuton() {
 	retrieveMobileRed();
 	if(feeder_station == 1) {
-	moveToFeederStationRed();
-	depositFirstStackRed();
-}
+		moveToFeederStationRed();
+		depositFirstStackRed();
+	}
+	// not stacking
+	depositBaseNoFeeder();
 }
 void deployPreload() {
 	moveArmToPosition(GROUND_POS);
@@ -45,7 +68,7 @@ int getStartPosition() {
 
 void retrieveMobile() {
 leftWheels(DRIVE_BACKWARD);
-delay(600);
+delay(650);
 leftWheels(0);
 strafeWheel(127);
 delay(500);
@@ -53,29 +76,29 @@ strafeWheel(-127);
 delay(50);
 strafeWheel(0);
 strafeWheel(45);
-moveIn(-41);
+moveIn(-42);
 strafeWheel(0);
 strafeWheel(-127);
 delay(300);
 strafeWheel(0);
 delay(500);
-//coneArmSpeed(CONE_ARM_DOWN);
-//delay(2000);
-deployPreload();
+coneArmSpeed(CONE_ARM_DOWN);
+delay(2000);
+//deployPreload();
 coneArmSpeed(0);
 //	resetGyro();
 lowerBase();
 //leftWheels(-DRIVE_BACKWARD*.6);
 delay(800);
 leftWheels(0);
-moveIn(-25);
+moveIn(-22);
 
 raiseBase();
-//coneArmSpeed(CONE_ARM_UP*.8);
-//delay(2000);
-//coneArmSpeed(0);
-stackPreload();
-strafeWheel(127);
+coneArmSpeed(CONE_ARM_UP*.8);
+delay(2000);
+coneArmSpeed(0);
+//stackPreload();
+strafeWheel(-127);
 delay(500);
 //strafeWheel(-127);
 //delay(1000);
@@ -102,7 +125,7 @@ void retrieveMobileRed() {
 	delay(300);
 	strafeWheel(0);
 	delay(500);
-	deployPreload();
+	//deployPreload();
 	//	resetGyro();
 	lowerBase();
 	delay(800);
@@ -134,6 +157,10 @@ void moveToFeederStation() {
 	//rotateTo(135);
 	//delay(500);
 	//moveIn(-10);
+}
+void depositBaseNoFeeder() {
+//	rotateTo(150);
+	moveIn(40);
 }
 void moveToFeederStationRed() {
 	moveIn(16);
@@ -222,6 +249,7 @@ void lowerBase() {
 
 void raiseBase() {
 	while(!getGoalLiftBump()) {
+		writeDebugStreamLine("%d", getGoalLiftBump());
 		goalArmSpeed(GOAL_ARM_UP);
 	}
 	goalArmSpeed(0);
