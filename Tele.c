@@ -14,18 +14,21 @@ void doTeleop() {
 	float multMain = (getB7D() || getB8D())? 0.5: 1;
 	//															| P7D P8D
 	float multPartner = (getP7D() || getP8D())? 0.5: 1;
-
-	// (up, down, lock) 						| P5U P5D P7U P7L
- 	coneArmControl(getP5U(), getP5D(), getP7L(), multPartner);
- 	// (open, close)								| P6D P6U
- 	coneClawControl(getP6D(), getP6U(), multPartner);
-	// (up, down)										| 6U  6D
- 	goalArmControl1(getB6U(), getB6D(), multMain);
-  // (left x-axis, left y-axis,		| LJX LJY RJX RJY
- 	// right x-axis, right y-axis)
- 	wheelControl(getLJoyX(), getRJoyY(), getRJoyX(), getLJoyY(), multMain);
- 	// (open, close)								| B5U B5D
- 	pusherControl(getB5U(), getB5D(), multMain);
+  if (getB8D())
+  	stopAllMotors();
+  else {
+		// (up, down, lock) 						| P5U P5D P7U P7L
+	 	coneArmControl(getP5U(), getP5D(), getP7L(), multPartner);
+	 	// (open, close)								| P6D P6U
+	 	coneClawControl(getP6D(), getP6U(), multPartner);
+		// (up, down)										| 6U  6D
+	 	goalArmControl1(getB6U(), getB6D(), multMain);
+	  // (left x-axis, left y-axis,		| LJX LJY RJX RJY
+	 	// right x-axis, right y-axis)
+	 	wheelControl(getLJoyX(), getRJoyY(), getRJoyX(), getLJoyY(), multMain);
+	 	// (open, close)								| B5U B5D
+	 	pusherControl(getB5U(), getB5D(), multMain);
+ 	}
 }
 
 task feederArm() {
@@ -42,6 +45,7 @@ task feederArm() {
 	moveArmToPosition(CONE_ARM_HIGH);
 }
 void coneArmControl(const bool moveUp, const bool moveDown, const bool lockArm, const float multiplier) {
+
 	if(moveUp) {
 		coneArmSpeed(CONE_ARM_UP * multiplier);
 	}
@@ -54,17 +58,21 @@ void coneArmControl(const bool moveUp, const bool moveDown, const bool lockArm, 
 		else
 			coneArmSpeed(CONE_ARM_DOWN * .1);
 	}
-	else {
-		coneArmSpeed(0);
+	else if (getPRJoyY() > 10) {
+		coneArmSpeed(getPRJoyY());
+  }
+  else {
+    coneArmSpeed(0);
   }
 
   if (getP8R()) {
-  	moveArmToPosition(CONE_ARM_FEEDER);
+  	//moveArmToPosition(CONE_ARM_FEEDER);
   	//startTask(feederArm, 15);
   }
  	else if(getP8D()) {
  		//stopTask(feederArm);
 	}
+
 }
 
 float applyCurve(float input, int n) {
