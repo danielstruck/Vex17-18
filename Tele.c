@@ -3,17 +3,28 @@
 #include "Sensors.h"
 
 void doTeleop() {
+	//    MAIN     |    PART
+	// 5 6 7 8 L R | 5 6 7 8 L R
+  // _ _ U U _ _ | _ _ _ U X X
+  // _ _ _ _ _ _ | _ _ _ _ Y Y
+  //     L L     |     _ L
+  //     R R     |     R R
+
+  // 															| B7D B8D
 	float multMain = (getB7D() || getB8D())? 0.5: 1;
+	//															| P7D P8D
 	float multPartner = (getP7D() || getP8D())? 0.5: 1;
-	// (up, down)
+
+	// (up, down, lock) 		| P5U P5D P7U P7L
  	coneArmControl(getP5U(), getP5D(), getP7L(), multPartner);
- 	// (open, close)
+ 	// (open, close)								| P6D P6U
  	coneClawControl(getP6D(), getP6U(), multPartner);
-	// (up, down)
+	// (up, down)										| 6U  6D
  	goalArmControl1(getB6U(), getB6D(), multMain);
-  // (left x-axis, left y-axis, right x-axis, right y-axis)
+  // (left x-axis, left y-axis,		| LJX LJY RJX RJY
+ 	// right x-axis, right y-axis)
  	wheelControl(getLJoyX(), getLJoyY(), -getRJoyX(), getRJoyY(), multMain);
- 	// (open, close)
+ 	// (open, close)								| B5U B5D
  	pusherControl(getB5U(), getB5D(), multMain);
 }
 
@@ -42,23 +53,22 @@ void wheelControl(int leftXAxis, int leftYAxis, int rightXAxis, int rightYAxis, 
     const int threshhold = 10;
 
 	/* -Tank- */
-	//rightWheels((getRJoyY() * multiplier) * .5);
-	//leftWheels(getLJoyY() * multiplier);
-	//if(getB8L())
-	//	strafeWheel(STRAFE_RIGHT * multiplier);
-	//else if(getB7R())
-	//	strafeWheel(STRAFE_LEFT * multiplier);
-	//else
-	//	strafeWheel(0);
-
-	/* -Arcade- */
-
-	rightWheels(applyCurve(leftYAxis - rightXAxis, 2) * multiplier);
-	leftWheels(applyCurve(leftYAxis + rightXAxis, 2) * multiplier);
-	if(abs(leftXAxis) > threshhold)
-		strafeWheel(-leftXAxis * multiplier);
+	rightWheels((getRJoyY() * multiplier) * .5);
+	leftWheels(getLJoyY() * multiplier);
+	if(getB8L())
+		strafeWheel(STRAFE_RIGHT * multiplier);
+	else if(getB7R())
+		strafeWheel(STRAFE_LEFT * multiplier);
 	else
 		strafeWheel(0);
+
+	/* -Arcade- */
+	//rightWheels(applyCurve(leftYAxis - rightXAxis, 2) * multiplier);
+	//leftWheels(applyCurve(leftYAxis + rightXAxis, 2) * multiplier);
+	//if(abs(leftXAxis) > threshhold)
+	//	strafeWheel(-leftXAxis * multiplier);
+	//else
+	//	strafeWheel(0);
 }
 
 void goalArmControl1(const bool moveUp, const bool moveDown, const float multiplier) {
