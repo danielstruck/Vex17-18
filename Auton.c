@@ -4,7 +4,7 @@
 #include "Motors.h"
 //include "vision.h"
 #define feeder_station 0
-#define blue 1
+#define blue 0
 void doAuton() {
 	// decide if we are blue or red
 //	static int startPosition = getStartPosition();
@@ -47,10 +47,10 @@ void blueAuton() {
 }
 void redAuton() {
 	retrieveMobileRed();
-	if(feeder_station == 1) {
-		moveToFeederStationRed();
-		depositFirstStackRed();
-	}
+	//if(feeder_station == 1) {
+	//	moveToFeederStationRed();
+	//	depositFirstStackRed();
+	//}
 	// not stacking
 		moveIn(40);
 	rotateTo(-210);
@@ -85,7 +85,7 @@ int getStartPosition() {
 
 void retrieveMobile() {
 leftWheels(DRIVE_BACKWARD);
-delay(650);
+delay(600);
 leftWheels(0);
 strafeWheel(127);
 delay(500);
@@ -128,7 +128,7 @@ strafeWheel(0);
 }
 void retrieveMobileRed() {
 	rightwheels(DRIVE_BACKWARD);
-delay(650);
+delay(600);
 rightWheels(0);
 strafeWheel(-127);
 delay(500);
@@ -216,7 +216,7 @@ void stackConeFromFeeder() {
 }
 }
 void setArmToFeeder() {
-	moveArmToPosition(FEEDER_CONE_POS);
+	moveArmToPosition(FEEDER_POS);
 	coneClawSpeed(CONE_CLAW_OPEN);
 	delay(200);
 	coneArmSpeed(CONE_ARM_UP * .05);
