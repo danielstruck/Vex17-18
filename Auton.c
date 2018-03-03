@@ -52,7 +52,24 @@ void redAuton() {
 		depositFirstStackRed();
 	}
 	// not stacking
-	depositBaseNoFeeder();
+		moveIn(40);
+	rotateTo(-210);
+	moveIn(-32);
+	rotateTo(-270);
+	driveStraight(DRIVE_BACKWARD);
+	delay(2000);
+	driveStraight(0);
+	coneClawSpeed(CONE_CLAW_OPEN);
+	coneArmSpeed(CONE_ARM_DOWN);
+	delay(500);
+	coneClawSpeed(0);
+	delay(1500);
+	coneArmSpeed(0);
+	lowerBase();
+	delay(500);
+	driveStraight(DRIVE_FORWARD);
+	delay(1000);
+	driveStraight(0);
 }
 void deployPreload() {
 	moveArmToPosition(GROUND_POS);
@@ -110,33 +127,42 @@ strafeWheel(0);
 //coneClawS
 }
 void retrieveMobileRed() {
-	rightWheels(DRIVE_BACKWARD);
-	delay(600);
-	rightWheels(0);
-	strafeWheel(-127);
-	delay(500);
-	strafeWheel(127);
-	delay(50);
-	strafeWheel(0);
-	strafeWheel(-45);
-	moveIn(-41);
-	strafeWheel(0);
-	strafeWheel(127);
-	delay(300);
-	strafeWheel(0);
-	delay(500);
-	//deployPreload();
-	//	resetGyro();
-	lowerBase();
-	delay(800);
-	leftWheels(0);
-	moveIn(-25);
+	rightwheels(DRIVE_BACKWARD);
+delay(650);
+rightWheels(0);
+strafeWheel(-127);
+delay(500);
+strafeWheel(127);
+delay(50);
+strafeWheel(0);
+strafeWheel(-45);
+moveIn(-42);
+strafeWheel(0);
+strafeWheel(127);
+delay(300);
+strafeWheel(0);
+delay(500);
+coneArmSpeed(CONE_ARM_DOWN);
+delay(2000);
+//deployPreload();
+coneArmSpeed(0);
+//	resetGyro();
+lowerBase();
+//leftWheels(-DRIVE_BACKWARD*.6);
+delay(800);
+leftWheels(0);
+moveIn(-22);
 
-	raiseBase();
-	stackPreload();
-	strafeWheel(-127);
-	delay(500);
-	strafeWheel(0);
+raiseBase();
+coneArmSpeed(CONE_ARM_UP*.8);
+delay(2000);
+coneArmSpeed(0);
+//stackPreload();
+strafeWheel(127);
+delay(500);
+//strafeWheel(-127);
+//delay(1000);
+strafeWheel(0);
 }
 
 void stackConeFromGround() {
