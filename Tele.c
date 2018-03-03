@@ -7,8 +7,8 @@ void doTeleop() {
 	// 5 6 7 8 L R | 5 6 7 8 L R
   // _ _ U U _ _ | _ _ _ U X X
   // _ _ _ _ _ _ | _ _ _ _ Y Y
-  //     L L     |     _ L
-  //     R R     |     R R
+  //     L _     |     _ L
+  //     _ R     |     R _
 
   // 															| B7D B8D
 	float multMain = (getB7D() || getB8D())? 0.5: 1;
@@ -28,6 +28,19 @@ void doTeleop() {
  	pusherControl(getB5U(), getB5D(), multMain);
 }
 
+task feederArm() {
+	coneClawSpeed(CONE_CLAW_OPEN);
+	moveArmToPosition(CONE_ARM_FEEDER);
+	coneClawSpeed(CONE_CLAW_CLOSE);
+	// has cone
+	moveArmToPosition(CONE_ARM_HIGH);
+	coneArmSpeed(CONE_ARM_UP);
+	delay(100);
+	coneArmSpeed(0);
+	// cone on base
+	coneClawSpeed(CONE_CLAW_OPEN);
+	moveArmToPosition(CONE_ARM_HIGH);
+}
 void coneArmControl(const bool moveUp, const bool moveDown, const bool lockArm, const float multiplier) {
 	if(moveUp) {
 		coneArmSpeed(CONE_ARM_UP * multiplier);
@@ -44,21 +57,29 @@ void coneArmControl(const bool moveUp, const bool moveDown, const bool lockArm, 
 	else {
 		coneArmSpeed(0);
   }
+
+  if (getP8R()) {
+  	moveArmToPosition(CONE_ARM_FEEDER);
+  	//startTask(feederArm, 15);
+  }
+ 	else if(getP8D()) {
+ 		//stopTask(feederArm);
+	}
 }
 
 float applyCurve(float input, int n) {
 	return ipow(input, n)/ipow(127,n-1);
 }
 void wheelControl(int leftXAxis, int leftYAxis, int rightXAxis, int rightYAxis, const float multiplier) {
-    const int threshhold = 10;
+	const int threshhold = 10;
 
 
 	/* -Tank- */
 	rightWheels(rightYAxis * multiplier);
 	leftWheels(leftYAxis * multiplier);
-	if(getB7R())
+	if(getB8L())
 		strafeWheel(STRAFE_RIGHT * multiplier);
-	else if(getB8L())
+	else if(getB7R())
 		strafeWheel(STRAFE_LEFT * multiplier);
 	else
 		strafeWheel(0);
