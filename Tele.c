@@ -15,7 +15,7 @@ void doTeleop() {
 	//															| P7D P8D
 	float multPartner = (getP7D() || getP8D())? 0.5: 1;
 
-	// (up, down, lock) 		| P5U P5D P7U P7L
+	// (up, down, lock) 						| P5U P5D P7U P7L
  	coneArmControl(getP5U(), getP5D(), getP7L(), multPartner);
  	// (open, close)								| P6D P6U
  	coneClawControl(getP6D(), getP6U(), multPartner);
@@ -23,7 +23,7 @@ void doTeleop() {
  	goalArmControl1(getB6U(), getB6D(), multMain);
   // (left x-axis, left y-axis,		| LJX LJY RJX RJY
  	// right x-axis, right y-axis)
- 	wheelControl(getLJoyX(), getLJoyY(), -getRJoyX(), getRJoyY(), multMain);
+ 	wheelControl(getLJoyX(), getRJoyY(), getRJoyX(), getLJoyY(), multMain);
  	// (open, close)								| B5U B5D
  	pusherControl(getB5U(), getB5D(), multMain);
 }
@@ -52,12 +52,13 @@ float applyCurve(float input, int n) {
 void wheelControl(int leftXAxis, int leftYAxis, int rightXAxis, int rightYAxis, const float multiplier) {
     const int threshhold = 10;
 
+
 	/* -Tank- */
-	rightWheels((getRJoyY() * multiplier) * .5);
-	leftWheels(getLJoyY() * multiplier);
-	if(getB8L())
+	rightWheels(rightYAxis * multiplier);
+	leftWheels(leftYAxis * multiplier);
+	if(getB7R())
 		strafeWheel(STRAFE_RIGHT * multiplier);
-	else if(getB7R())
+	else if(getB8L())
 		strafeWheel(STRAFE_LEFT * multiplier);
 	else
 		strafeWheel(0);
