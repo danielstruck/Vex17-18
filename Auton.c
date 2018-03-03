@@ -4,7 +4,7 @@
 #include "Motors.h"
 //include "vision.h"
 #define feeder_station 0
-#define blue 1
+#define blue 0
 void doAuton() {
 	// decide if we are blue or red
 //	static int startPosition = getStartPosition();
