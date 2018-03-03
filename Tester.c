@@ -70,7 +70,9 @@ task autonomous(){
 /*---------------------------------------------------------------------------*/
 
 task usercontrol() {
-	while(true) {
-		doTeleop();
-	}
+	//while(true) {
+		//writeDebugStreamLine("%d", BackupBatteryLevel);
+		//doTeleop();
+//	}
+	doAuton();
 }
