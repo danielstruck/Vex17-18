@@ -4,7 +4,7 @@
 #include "Motors.h"
 //include "vision.h"
 #define feeder_station 0
-#define blue 0
+#define blue 1
 void doAuton() {
 	// decide if we are blue or red
 //	static int startPosition = getStartPosition();
@@ -25,8 +25,8 @@ void blueAuton() {
 	// not stacking
 //	rotateTo(0);
 	moveIn(40);
-	rotateTo(210);
-	moveIn(-32);
+	rotateTo(220);
+	moveIn(-40);
 	rotateTo(270);
 	driveStraight(DRIVE_BACKWARD);
 	delay(2000);
@@ -53,9 +53,9 @@ void redAuton() {
 	//}
 	// not stacking
 		moveIn(40);
-	rotateTo(-210);
+	rotateTo(140);
 	moveIn(-32);
-	rotateTo(-270);
+	rotateTo(120);
 	driveStraight(DRIVE_BACKWARD);
 	delay(2000);
 	driveStraight(0);
@@ -93,10 +93,10 @@ strafeWheel(-127);
 delay(50);
 strafeWheel(0);
 strafeWheel(45);
-moveIn(-42);
+moveIn(-44);
 strafeWheel(0);
 strafeWheel(-127);
-delay(300);
+delay(250);
 strafeWheel(0);
 delay(500);
 coneArmSpeed(CONE_ARM_DOWN);
@@ -109,7 +109,9 @@ lowerBase();
 delay(800);
 leftWheels(0);
 moveIn(-22);
-
+strafeWheel(127);
+delay(50);
+strafeWheel(0);
 raiseBase();
 coneArmSpeed(CONE_ARM_UP*.8);
 delay(2000);
@@ -128,18 +130,18 @@ strafeWheel(0);
 }
 void retrieveMobileRed() {
 	rightwheels(DRIVE_BACKWARD);
-delay(600);
+delay(800);
 rightWheels(0);
 strafeWheel(-127);
 delay(500);
 strafeWheel(127);
 delay(50);
 strafeWheel(0);
-strafeWheel(-45);
-moveIn(-42);
+strafeWheel(STRAFE_RIGHT* .5);
+moveIn(-38);
 strafeWheel(0);
-strafeWheel(127);
-delay(300);
+//strafeWheel(107);
+//delay(300);
 strafeWheel(0);
 delay(500);
 coneArmSpeed(CONE_ARM_DOWN);

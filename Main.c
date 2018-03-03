@@ -69,7 +69,6 @@ task autonomous(){
 /*                                                                           */
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
-
 task usercontrol() {
 	while(true) {
 		doTeleop();
